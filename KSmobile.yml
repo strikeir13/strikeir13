@@ -1,0 +1,1711 @@
+views:
+  - title: Home-V2
+    path: home-v2
+    visible:
+      - user: xxxx
+      - user: xxxx
+    icon: mdi:home
+    badges: []
+    cards:
+      - show_current: true
+        show_forecast: false
+        type: weather-forecast
+        entity: weather.tempest_weather_station
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - double_tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    brightness_pct: 100
+                    entity_id: master_bedroom_ceiling_light
+                entity: light.master_bedroom_ceiling_light
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: fan.master_bedroom_ceiling_fan
+                hold_action:
+                  action: more-info
+                double_tap_action:
+                  action: call-service
+                  service: script.bedroom_fan_speed_increaser
+                icon: |
+                  [[[ 
+                    var fan_speed = entity.attributes.percentage; 
+                    if (fan_speed == 33 ) return 'mdi:fan-speed-1';
+                    else if (fan_speed == 67 ) return 'mdi:fan-speed-2';
+                    else if (fan_speed == 100 ) return 'mdi:fan-speed-3';
+                    else return 'mdi:fan-off';
+                  ]]]
+                label: |
+                  [[[ 
+                    var fan_speed = entity.attributes.percentage; 
+                    if (fan_speed == 33 ) return 'Low';
+                    else if (fan_speed == 67 ) return 'Medium';
+                    else if (fan_speed == 100 ) return 'High';
+                    else return 'Off';
+                  ]]]
+                show_label: true
+                show_name: false
+                show_state: false
+                type: custom:button-card
+              - entity: switch.sonoffplug1_relay
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Keir Lamp
+                show_state: false
+                type: custom:button-card
+              - entity: light.bed_drawer_lights
+                hold_action:
+                  action: call-service
+                  service: browser_mod.popup
+                  service_data:
+                    title: Bed LED Options
+                    card:
+                      type: entities
+                      entities:
+                        - light.bed_drawer_lights
+                        - switch.adaptive_lighting_new_bed_lights
+                        - >-
+                          switch.adaptive_lighting_adapt_brightness_new_bed_lights
+                        - switch.adaptive_lighting_adapt_color_new_bed_lights
+                        - switch.adaptive_lighting_sleep_mode_new_bed_lights
+                show_name: true
+                name: LEDs
+                show_state: false
+                icon: mdi:led-strip-variant
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.master_bedroom_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.master_bedroom_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]] 
+              - entity: binary_sensor.window_master_south
+                name: South
+                type: custom:button-card
+              - entity: binary_sensor.window_master_west
+                name: West
+                type: custom:button-card
+          - type: conditional
+            conditions:
+              - entity: input_boolean.vacation_mode
+                state_not: 'off'
+            card:
+              type: horizontal-stack
+              cards:
+                - entity: switch.sonoffplug1_relay
+                  hold_action:
+                    action: more-info
+                  icon: mdi:lightbulb
+                  show_name: true
+                  name: Keir Lamp
+                  show_state: false
+                  type: custom:button-card
+                - entity: switch.wifiplug1_relay
+                  hold_action:
+                    action: more-info
+                  icon: mdi:lightbulb
+                  show_name: true
+                  name: xxxx Lamp
+                  show_state: false
+                  type: custom:button-card
+                - color_type: blank-card
+                  type: custom:button-card
+                - color_type: blank-card
+                  type: custom:button-card
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Master Bedroom
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - double_tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    brightness_pct: 100
+                    entity_id: light.office_ceiling_light
+                entity: light.office_ceiling_light
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: fan.office_ceiling_fan
+                hold_action:
+                  action: more-info
+                double_tap_action:
+                  action: call-service
+                  service: script.office_fan_speed_increaser
+                icon: |
+                  [[[ 
+                    var fan_speed = entity.attributes.percentage; 
+                    if (fan_speed == 33 ) return 'mdi:fan-speed-1';
+                    else if (fan_speed == 67 ) return 'mdi:fan-speed-2';
+                    else if (fan_speed == 100 ) return 'mdi:fan-speed-3';
+                    else return 'mdi:fan-off';
+                  ]]]
+                label: |
+                  [[[ 
+                    var fan_speed = entity.attributes.percentage; 
+                    if (fan_speed == 33 ) return 'Low';
+                    else if (fan_speed == 67 ) return 'Medium';
+                    else if (fan_speed == 100 ) return 'High';
+                    else return 'Off';
+                  ]]]
+                show_label: true
+                show_name: false
+                show_state: false
+                type: custom:button-card
+              - entity: light.elgato_key_light
+                hold_action:
+                  action: more-info
+                show_name: true
+                name: Desk Light
+                show_state: false
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+              - entity: switch.adaptive_lighting_elgato_desk_light
+                type: custom:button-card
+                double_tap_action:
+                  action: call-service
+                  service: switch.toggle
+                  service_data:
+                    entity_id: >-
+                      switch.adaptive_lighting_adapt_brightness_elgato_desk_light
+                hold_action:
+                  action: more-info
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+                icon: mdi:theme-light-dark
+                name: Adaptive
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.office_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.office_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]]
+              - type: custom:button-card
+                entity: binary_sensor.window_office_north
+                name: North
+              - type: custom:button-card
+                entity: binary_sensor.window_office_west
+                name: West
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Office
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: group.living_room_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                name: Lamps
+                type: custom:button-card
+              - entity: switch.living_room_speaker_power
+                hold_action:
+                  action: more-info
+                name: Speakers
+                type: custom:button-card
+              - color_type: blank_card
+                type: custom:button-card
+              - entity: switch.double_plug_2_2
+                hold_action:
+                  action: more-info
+                icon: mdi:string-lights
+                name: Window
+                type: custom:button-card
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.living_room_temperature
+                icon: mdi:thermometer
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.living_room_humidity
+                icon: mdi:water-percent
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]] 
+              - type: custom:button-card
+                entity: binary_sensor.window_living_north
+                name: North
+              - type: custom:button-card
+                entity: binary_sensor.window_living_south
+                name: South
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Living Room
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: light.kitchen_main_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Main
+                show_state: false
+                type: custom:button-card
+              - entity: light.kitchen_island_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Island
+                show_state: false
+                type: custom:button-card
+              - entity: light.kitchen_table_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Table
+                show_state: false
+                type: custom:button-card
+              - entity: light.back_yard_deck
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Deck
+                show_state: false
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+          - type: horizontal-stack
+            cards:
+              - color_type: blank_card
+                type: custom:button-card
+              - color_type: blank_card
+                type: custom:button-card
+              - type: custom:button-card
+                entity: binary_sensor.window_kitchen
+                name: Kitchen
+              - entity: binary_sensor.door_up_deck
+                name: Deck
+                type: custom:button-card
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Kitchen
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.upstairs_temperature
+                icon: mdi:thermometer
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.upstairs_humidity
+                icon: mdi:water-percent
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]] 
+              - entity: climate.infinitive
+                hold_action:
+                  action: more-info
+                label: >
+                  [[[ 
+
+                  const hvac_action = entity.attributes.hvac_action
+
+                  return hvac_action.charAt(0).toUpperCase() +
+                  hvac_action.slice(1);
+
+                  ]]]
+                show_label: true
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state == "heat"
+                      ]]]
+                    color: red
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state == "heat_cool"
+                      ]]]
+                    color: purple
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state == "cool"
+                      ]]]
+                    color: blue
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    temperature:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 66%
+                      - top: 0%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 10px
+                      - line-height: 20px
+                    target_temp_high:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 66%
+                      - top: 0%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 10px
+                      - line-height: 20px
+                    target_temp_low:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 66%
+                      - top: 32%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 10px
+                      - line-height: 20px
+                custom_fields:
+                  temperature: >
+                    [[[  var temperature = entity.attributes.temperature; return
+                    temperature ]]]
+                  target_temp_high: >
+                    [[[  var target_temp_high =
+                    entity.attributes.target_temp_high; return target_temp_high
+                    ]]]
+                  target_temp_low: >
+                    [[[  var target_temp_low =
+                    entity.attributes.target_temp_low; return target_temp_low
+                    ]]] 
+              - entity: climate.infinitive
+                label: |
+                  [[[ 
+                  var airflow_cfm = entity.attributes.airflow_cfm
+                  return airflow_cfm + " CFM";
+                  ]]]
+                show_label: true
+                show_name: false
+                show_state: false
+                icon: |
+                  [[[ 
+                    var fan_mode = entity.attributes.fan_mode; 
+                    if (fan_mode == 'low') return 'mdi:fan-speed-1';
+                    else if (fan_mode == 'medium') return 'mdi:fan-speed-2';
+                    else if (fan_mode == 'high') return 'mdi:fan-speed-3';
+                    else return 'mdi:fan-off';
+                  ]]]
+                type: custom:button-card
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Infinitive Thermostat
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: light.tv_room_main_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: media_player.vizio_smartcast
+                hold_action:
+                  action: more-info
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: call-service
+                  service: media_player.toggle
+                  service_data:
+                    entity_id: entity
+                type: custom:button-card
+              - color_type: blank-card
+                type: custom:button-card
+              - entity: light.back_yard_patio
+                hold_action:
+                  action: more-info
+                name: Back Patio
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.xxxx_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.xxxx_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]]
+              - color_type: blank-card
+                type: custom:button-card
+              - entity: binary_sensor.door_down_patio
+                type: custom:button-card
+                name: Patio
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: TV Room
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: switch.sonoffplug2_relay
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                show_name: true
+                name: Lamp
+                show_state: false
+                type: custom:button-card
+              - entity: light.gym_leds
+                hold_action:
+                  action: more-info
+                show_name: true
+                name: LEDs
+                show_state: false
+                icon: mdi:led-strip-variant
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+              - entity: media_player.gym_tv
+                hold_action:
+                  action: more-info
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: call-service
+                  service: media_player.toggle
+                  service_data:
+                    entity_id: entity
+                type: custom:button-card
+              - entity: media_player.new_gym
+                hold_action:
+                  action: more-info
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: call-service
+                  service: media_player.toggle
+                  service_data:
+                    entity_id: entity
+                type: custom:button-card
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.gym_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.gym_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]]
+              - entity: binary_sensor.window_gym_east
+                name: East
+                type: custom:button-card
+              - entity: binary_sensor.window_gym_south
+                name: South
+                type: custom:button-card
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Gym
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.spare_bedroom_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.spare_bedroom_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]] 
+              - type: custom:button-card
+                entity: binary_sensor.window_down_spare
+                name: Spare
+              - type: custom:button-card
+                entity: sensor.vacuum
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace-mobile/vacuum
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Spare Bedroom
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.washer
+                type: custom:button-card
+                show_name: true
+                show_label: true
+                label: |
+                  [[[
+                    if (entity.state == 'off') 
+                      return entity.state.charAt(0).toUpperCase() + entity.state.slice(1)
+                    else
+                      return entity.attributes.run_state + ' ' + entity.attributes.remain_time
+                  ]]]
+                styles:
+                  card:
+                    - font-size: 12px
+              - entity: sensor.dryer
+                type: custom:button-card
+                show_name: true
+                show_label: true
+                label: |
+                  [[[
+                    if (entity.state == 'off') 
+                      return entity.state.charAt(0).toUpperCase() + entity.state.slice(1)
+                    else
+                      return entity.attributes.current_course + ' ' + entity.attributes.remain_time
+                  ]]]
+                styles:
+                  card:
+                    - font-size: 12px
+              - color_type: blank-card
+                type: custom:button-card
+              - color_type: blank-card
+                type: custom:button-card
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.bme680_temperature
+                show_name: false
+                show_state: true
+                type: custom:button-card
+              - entity: sensor.bme680_humidity
+                show_name: false
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= states['input_number.target_humidity'].state * 0.9
+                      ]]]
+                    color: orange
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > states['input_number.target_humidity'].state * 0.9 &&
+                        entity.state < states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: green
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= states['input_number.target_humidity'].state * 1.1
+                      ]]]
+                    color: red
+                type: custom:button-card
+                styles:
+                  grid:
+                    - position: relative
+                  custom_fields:
+                    notification:
+                      - border-radius: 50%
+                      - position: absolute
+                      - left: 60%
+                      - top: 10%
+                      - height: 20px
+                      - width: 20px
+                      - font-size: 8px
+                      - line-height: 20px
+                custom_fields:
+                  notification: >
+                    [[[ 
+
+                    var target_humidity_raw =
+                    states['input_number.target_humidity'].state
+
+                    var target_humidity =
+                    Math.round(Number(target_humidity_raw)).toFixed(0) + '%'
+
+                    return target_humidity
+
+                    ]]]
+              - entity: binary_sensor.window_laundry_west
+                name: West
+                type: custom:button-card
+              - entity: binary_sensor.window_laundry_south
+                name: South
+                type: custom:button-card
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Laundry Room
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: light.front_yard_lights
+                double_tap_action:
+                  action: more-info
+                hold_action:
+                  action: call-service
+                  service: browser_mod.popup
+                  service_data:
+                    title: Front Yard Lights Options
+                    card:
+                      type: entities
+                      entities:
+                        - light.front_yard_north
+                        - light.front_yard_south
+                        - switch.adaptive_lighting_front_yard_lights
+                        - >-
+                          switch.adaptive_lighting_adapt_brightness_front_yard_lights
+                        - switch.adaptive_lighting_adapt_color_front_yard_lights
+                        - switch.adaptive_lighting_sleep_mode_front_yard_lights
+                icon: mdi:lightbulb
+                name: Front Lights
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+              - entity: light.back_yard_lights
+                double_tap_action:
+                  action: more-info
+                hold_action:
+                  action: call-service
+                  service: browser_mod.popup
+                  service_data:
+                    title: Back Yard Lights Options
+                    card:
+                      type: entities
+                      entities:
+                        - light.back_yard_garage
+                        - light.back_yard_deck
+                        - light.back_yard_patio
+                        - switch.adaptive_lighting_back_yard_lights
+                        - >-
+                          switch.adaptive_lighting_adapt_brightness_back_yard_lights
+                        - switch.adaptive_lighting_adapt_color_back_yard_lights
+                        - switch.adaptive_lighting_sleep_mode_back_yard_lights
+                icon: mdi:lightbulb
+                name: Back Lights
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+              - entity: switch.adaptive_lighting_outdoor_lights
+                type: custom:button-card
+                double_tap_action:
+                  action: call-service
+                  service: switch.toggle
+                  service_data:
+                    entity_id: switch.adaptive_lighting_adapt_brightness_outdoor_lights
+                hold_action:
+                  action: more-info
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+                icon: mdi:theme-light-dark
+                name: Adaptive
+              - type: custom:button-card
+                entity: switch.wifiplug2_relay
+                name: Holiday Lights
+                icon: mdi:string-lights
+          - type: horizontal-stack
+            cards:
+              - entity: cover.garage_door
+                hold_action:
+                  action: more-info
+                  name: Door
+                type: custom:button-card
+              - type: custom:button-card
+                entity: lock.garage_door_lock
+                show_name: false
+                show_state: true
+              - type: custom:button-card
+                entity: binary_sensor.door_garage_back
+                name: Back Door
+              - type: custom:button-card
+                entity: binary_sensor.door_garage_interior
+                name: House Door
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Garage
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - entity: light.outdoor_lights
+                hold_action:
+                  action: more-info
+                icon: mdi:lightbulb
+                name: Outdoor
+                type: custom:button-card
+                styles:
+                  icon:
+                    - color: var(--button-card-light-color)
+              - color_type: blank-card
+                type: custom:button-card
+              - type: custom:button-card
+                entity: binary_sensor.window_down_bath
+                name: Down Bath
+              - type: custom:button-card
+                entity: binary_sensor.door_front_main
+                name: Front Door
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Miscellaneous
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: sensor.particulate_matter_10_0um_concentration
+                name: PM10
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 10
+                      ]]]
+                    color: rgb(109,213,89)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 10 &&
+                        entity.state < 25
+                      ]]]
+                    color: rgb(255,192,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 25
+                      ]]]
+                    color: rgb(255,2,1)
+              - type: custom:button-card
+                entity: sensor.particulate_matter_2_5um_concentration
+                name: PM2.5
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 10
+                      ]]]
+                    color: rgb(109,213,89)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 10 &&
+                        entity.state < 25
+                      ]]]
+                    color: rgb(255,192,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 25
+                      ]]]
+                    color: rgb(255,2,1)
+              - type: custom:button-card
+                entity: sensor.particulate_matter_1_0um_concentration
+                name: PM1
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 10
+                      ]]]
+                    color: rgb(109,213,89)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 10 &&
+                        entity.state < 25
+                      ]]]
+                    color: rgb(255,192,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 25
+                      ]]]
+                    color: rgb(255,2,1)
+              - color_type: blank-card
+                type: custom:button-card
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: sensor.xxxx_radon_1day_avg
+                name: 1-Day
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= 2.6
+                      ]]]
+                    color: rgb(127,217,106)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 2.6 &&
+                        entity.state < 4
+                      ]]]
+                    color: rgb(249,187,84)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 4
+                      ]]]
+                    color: rgb(247,95,78)
+              - type: custom:button-card
+                entity: sensor.xxxx_radon_365d_avg
+                name: 1-Year
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state <= 2.6
+                      ]]]
+                    color: rgb(127,217,106)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 2.6 &&
+                        entity.state < 4
+                      ]]]
+                    color: rgb(249,187,84)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 4
+                      ]]]
+                    color: rgb(247,95,78)
+              - type: custom:button-card
+                entity: sensor.xxxx_co2
+                name: CO2
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 800
+                      ]]]
+                    color: rgb(127,217,106)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 800 &&
+                        entity.state < 1000
+                      ]]]
+                    color: rgb(249,187,84)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 1000
+                      ]]]
+                    color: rgb(247,95,78)
+              - type: custom:button-card
+                entity: sensor.xxxx_voc
+                name: VOC
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 250
+                      ]]]
+                    color: rgb(127,217,106)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 250 &&
+                        entity.state < 2000
+                      ]]]
+                    color: rgb(249,187,84)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 2000
+                      ]]]
+                    color: rgb(247,95,78)
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Indoor Air Quality
+        type: custom:stack-in-card
+      - cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: sensor.airnow_aqi
+                name: AQI
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 50
+                      ]]]
+                    color: rgb(0,228,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 50 &&
+                        entity.state < 100
+                      ]]]
+                    color: rgb(255,255,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 100 &&
+                        entity.state < 150
+                      ]]]
+                    color: rgb(255,126,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 150 &&
+                        entity.state < 200
+                      ]]]
+                    color: rgb(255,0,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 200 &&
+                        entity.state < 300
+                      ]]]
+                    color: rgb(143,63,151)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 300
+                      ]]]
+                    color: rgb(126,0,35)
+              - type: custom:button-card
+                entity: sensor.airnow_pm2_5
+                name: PM2.5
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 12.0
+                      ]]]
+                    color: rgb(0,228,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 12.0 &&
+                        entity.state < 35.4
+                      ]]]
+                    color: rgb(255,255,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 35.4 &&
+                        entity.state < 55.4
+                      ]]]
+                    color: rgb(255,126,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 55.4 &&
+                        entity.state < 150.4
+                      ]]]
+                    color: rgb(255,0,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 150.4 &&
+                        entity.state < 250.4
+                      ]]]
+                    color: rgb(143,63,151)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 250.4
+                      ]]]
+                    color: rgb(126,0,35)
+              - type: custom:button-card
+                entity: sensor.airnow_o3
+                name: O3
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 0.054
+                      ]]]
+                    color: rgb(0,228,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 0.054 &&
+                        entity.state < 0.070
+                      ]]]
+                    color: rgb(255,255,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 0.070 &&
+                        entity.state < 0.085
+                      ]]]
+                    color: rgb(255,126,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 0.085 &&
+                        entity.state < 0.105
+                      ]]]
+                    color: rgb(255,0,0)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 0.105 &&
+                        entity.state < 0.200
+                      ]]]
+                    color: rgb(143,63,151)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 0.200
+                      ]]]
+                    color: rgb(126,0,35)
+              - color_type: blank-card
+                type: custom:button-card
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: sensor.home_grass_pollen_0d
+                name: Grass
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 5
+                      ]]]
+                    color: rgb(147,199,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 5 &&
+                        entity.state < 20
+                      ]]]
+                    color: rgb(255,215,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 20 &&
+                        entity.state < 200
+                      ]]]
+                    color: rgb(240,85,20)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 200 &&
+                        entity.state < 300
+                      ]]]
+                    color: rgb(199,46,170)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 300
+                      ]]]
+                    color: rgb(122,21,112)
+              - type: custom:button-card
+                entity: sensor.home_mold_pollen_0d
+                name: Mold
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 6500
+                      ]]]
+                    color: rgb(147,199,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 6500 &&
+                        entity.state < 13000
+                      ]]]
+                    color: rgb(255,215,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 13000 &&
+                        entity.state < 50000
+                      ]]]
+                    color: rgb(240,85,20)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 50000 &&
+                        entity.state < 65000
+                      ]]]
+                    color: rgb(199,46,170)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 300
+                      ]]]
+                    color: rgb(122,21,112)
+              - type: custom:button-card
+                entity: sensor.home_ragweed_pollen_0d
+                name: Ragweed
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 10
+                      ]]]
+                    color: rgb(147,199,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 10 &&
+                        entity.state < 50
+                      ]]]
+                    color: rgb(255,215,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 50 &&
+                        entity.state < 500
+                      ]]]
+                    color: rgb(240,85,20)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 500 &&
+                        entity.state < 650
+                      ]]]
+                    color: rgb(199,46,170)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 650
+                      ]]]
+                    color: rgb(122,21,112)
+              - type: custom:button-card
+                entity: sensor.home_tree_pollen_0d
+                name: Tree
+                show_state: true
+                color_type: icon
+                state:
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state < 15
+                      ]]]
+                    color: rgb(147,199,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 15 &&
+                        entity.state < 90
+                      ]]]
+                    color: rgb(255,215,1)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 90 &&
+                        entity.state < 1500
+                      ]]]
+                    color: rgb(240,85,20)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state >= 1500 &&
+                        entity.state < 3000
+                      ]]]
+                    color: rgb(199,46,170)
+                  - operator: template
+                    value: |
+                      [[[
+                        return entity.state > 3000
+                      ]]]
+                    color: rgb(122,21,112)
+        keep:
+          outer_padding: true
+        mode: vertical
+        title: Outdoor Air Quality
+        type: custom:stack-in-card
+      - card:
+          state_color: true
+          title: Doors and Windows
+          type: entities
+        filter:
+          include:
+            - entity_id: binary_sensor.window*
+              state: 'on'
+              options:
+                secondary_info: last-changed
+            - entity_id: binary_sensor.window*
+              state: unavailable
+            - entity_id: binary_sensor.door*
+              state: 'on'
+            - entity_id: binary_sensor.door*
+              state: unavailable
+        type: custom:auto-entities
+        sort:
+          method: friendly_name
+      - cards:
+          - type: custom:grocy-chores-card
+            entity: sensor.grocy_chores
+            show_days: 0
+            show_empty: false
+            title: Chores
+          - type: horizontal-stack
+            cards:
+              - entity: input_boolean.notify_motion
+                type: custom:button-card
+                name: Motion
+                hold_action:
+                  action: more-info
+              - entity: input_boolean.notify_door_window
+                type: custom:button-card
+                name: Openings
+                hold_action:
+                  action: more-info
+              - entity: input_boolean.quiet_hours
+                type: custom:button-card
+                name: Quiet
+                hold_action:
+                  action: more-info
+              - entity: input_boolean.night_mode
+                type: custom:button-card
+                name: Night
+                hold_action:
+                  action: more-info
+          - type: horizontal-stack
+            cards:
+              - entity: input_boolean.notify_home
+                type: custom:button-card
+                name: Arrival
+                hold_action:
+                  action: more-info
+              - entity: person.keir
+                type: custom:button-card
+                show_state: true
+                show_name: false
+                show_entity_picture: true
+                entity_picture: /local/keir_square.jpg
+                hold_action:
+                  action: call-service
+                  service: automation.trigger
+                  service_data:
+                    entity_id: automation.get_xxxx_location
+              - entity: person.xxxx
+                type: custom:button-card
+                show_state: true
+                show_name: false
+                show_entity_picture: true
+                entity_picture: /local/xxxx_square_2.jpg
+                hold_action:
+                  action: call-service
+                  service: automation.trigger
+                  service_data:
+                    entity_id: automation.get_xxxx_location
+              - entity: input_boolean.vacation_mode
+                type: custom:button-card
+                name: Vacation
+                hold_action:
+                  action: more-info
+        keep:
+          outer_padding: true
+        mode: vertical
+        type: custom:stack-in-card
+        title: Settings
+      - type: button
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/default_view
+        show_icon: false
+        name: Overview
